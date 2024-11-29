@@ -9,7 +9,7 @@ pygame.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 950, 600
 fullscreen = False
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Dungeons and Dragons by Jake Nel v0.1.3")
+pygame.display.set_caption("Cellars and Snakes by Jake Nel v0.0.5")
 
 
 WHITE = (255, 255, 255)
@@ -58,7 +58,7 @@ def generate_enemy():
 
 
 def generate_item():
-    items = ["Health Potion", "Magic Scroll", "Silver Key", "Rusty Sword", "Golden Coin", "Golden Coin", "Golden Coin", "Painting of an old man", "Rusty Sword", "Magic Scroll", "Health Potion", "Silver Key" ]
+    items = ["Health Potion", "Magic Scroll", "Silver Key", "Rusty Sword", "Golden Coin", "Golden Coin", "Golden Coin", "Painting of an old man", "Rusty Sword", "Magic Scroll", "Health Potion", "Silver Key", "Magic Jewel", "A Book about soil", "A Treatise on Dragons", "Magic Theory 101" ]
     return random.choice(items)
 
 
@@ -100,7 +100,54 @@ def use_ability(ability):
         write_to_log(event)
         return None
 
-    
+def read_book(book_title):
+    """Simulate reading a book and display a nine-line story or fact."""
+    books = {
+        "A Book about soil": [
+            "Soil is the foundation of life on Earth.",
+            "It hosts billions of microorganisms in a single teaspoon.",
+            "There are more soil organisms in one scoop than people on Earth!",
+            "Soil acts as a natural filter for water.",
+            "Healthy soil stores more carbon than forests.",
+            "It can take 1,000 years to form just 1 cm of soil.",
+            "There are over 70,000 types of soil in the U.S. alone.",
+            "Earthworms are vital for aerating and mixing soil layers.",
+            "Protecting soil is crucial for future food security."
+        ],
+        "A Treatise on Dragons": [
+            "Dragons are mythical creatures with vast lore.",
+            "They are often depicted as fire-breathing reptiles.",
+            "In many cultures, dragons symbolize power and wisdom.",
+            "Western dragons are seen as greedy hoarders of gold.",
+            "Eastern dragons are often benevolent and wise.",
+            "Dragons are said to live for thousands of years.",
+            "Legends speak of dragons granting immense power.",
+            "Dragon scales are impervious to most weapons.",
+            "To slay a dragon is the ultimate heroic feat."
+        ],
+        "Magic Theory 101": [
+            "Magic is the art of altering reality with willpower.",
+            "Spells require mental focus and precise gestures.",
+            "Elemental magic draws power from nature's forces.",
+            "Illusion magic manipulates light and perception.",
+            "Runes amplify magic with ancient symbols.",
+            "Every spell requires a balance of energy and control.",
+            "Some believe magic is connected to the stars.",
+            "Powerful magic users often train for decades.",
+            "Misuse of magic can lead to catastrophic results."
+        ]
+    }
+
+    if book_title in books:
+        story = books[book_title]
+        event_log.extend(story)  # Add the story lines to the event log
+        write_to_log(f"You read {book_title}. Here's what you learned:")
+        for line in story:
+            write_to_log(line)
+        return story
+    else:
+        return ["You open the book, but the pages are blank..."]  # Default for unknown books
+
 
 player["Gold"] = 0  # Add gold to the player stats
 
@@ -173,8 +220,8 @@ def level_up():
     global LEVEL_UP_EXP
     player["EXP"] -= LEVEL_UP_EXP
     LEVEL_UP_EXP += EXP_PER_LEVEL
-    player["HP"] += 5  # Increase max HP
-    player["MP"] += 2  # Increase max MP
+    player["HP"] += 5  
+    player["MP"] += 2  
     stat_to_improve = random.choice(["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"])
     player[stat_to_improve] += 1
     event = (f"Congratulations! You leveled up! Your {stat_to_improve} increased by 1. "
@@ -284,6 +331,13 @@ def perform_action(action):
             event_log.append(event)
             write_to_log(event)
 
+    elif action == "read":
+        story_lines = read_book("A Book about soil")
+        y_offset = 10
+        for line in story_lines:
+            text = font.render(line, True, WHITE)
+            screen.blit(text, (10, y_offset))
+            y_offset += 20
 
     elif action == "attack" and not enemy:
         event = "There is no enemy to attack."
