@@ -2,4 +2,4 @@
 <p>Cellars and snakes is a DnD based rollplaying game where you traverse through mysterious dungeons and cellars,</p>
 <p>collecting strange and unique items, bashing through enemies, and enemies galore.</p>
 <p> </p>
-<p><b>CURRENT VERSION: </b>v0.0.4</p>
+<p><b>CURRENT VERSION: </b>v0.0.5</p>
