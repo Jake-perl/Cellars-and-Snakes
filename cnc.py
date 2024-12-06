@@ -9,12 +9,13 @@ pygame.init()
 SCREEN_WIDTH, SCREEN_HEIGHT = 950, 600
 fullscreen = False
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Cellars and Snakes by Jake Nel v0.0.5")
+pygame.display.set_caption("Cellars and Snakes by Jake Nel v0.0.6")
 
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+action = None  # Initialize the action variable
 
 clock = pygame.time.Clock()
 
@@ -338,6 +339,7 @@ def perform_action(action):
             text = font.render(line, True, WHITE)
             screen.blit(text, (10, y_offset))
             y_offset += 20
+        action = None  # Reset action after rendering the book content
 
     elif action == "attack" and not enemy:
         event = "There is no enemy to attack."
@@ -388,6 +390,13 @@ while game_running:
                 perform_action("inventory")
             elif event.key == pygame.K_d:  # 'D' to attack
                 perform_action("attack")
+            elif event.key == pygame.K_b:  # 'B' for "read book"
+                if "A Book about soil" in player["Inventory"]:  # Check if the book is in the inventory
+                    action = "read"  # Set the action to "read"
+                else:
+                    event_log.append("You don't have a book to read!")
+                    write_to_log("You don't have a book to read!")
+
             elif event.key == pygame.K_q:  # 'Q' to quit
                 save_log_to_file()
                 pygame.quit()
@@ -407,7 +416,16 @@ while game_running:
         screen.blit(text, (10, y_offset))
         y_offset += 20
 
-    
+    # Render book content on screen
+    if action == "read":
+        story_lines = read_book("A Book about soil")
+        y_offset = 10
+        for line in story_lines:
+            text = font.render(line, True, WHITE)
+            screen.blit(text, (10, y_offset))
+            y_offset += 20
+
+
     instructions = [
         "Press E to Explore",
         "Press R to Rest",
